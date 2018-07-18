@@ -22,6 +22,7 @@ Note: you are not required to install `node-routeros` since it's already a depen
 
 ## Examples
 Here are some short examples of usage, head to the [wiki](https://github.com/aluisiora/routeros-client/wiki) for a complete documentation.
+
 ### Connecting
 ```javascript
 const RouterOSClient = require('routeros-client').RouterOSClient;
@@ -38,7 +39,7 @@ api.connect().then((client) => {
     // You can either use spaces like the winbox terminal or
     // use the way the api does like "/system/identity", either way is fine
     client.menu("/system identity").getOnly().then((result) => {
-        console.log(result.identity); // Mikrotik
+        console.log(result.name); // Mikrotik
         api.close();
     }).catch((err) => {
         console.log(err); // Some error trying to get the identity
@@ -54,6 +55,7 @@ api.connect().then((client) => {
 
     client.menu("/interface").where("type", "vlan").get().then((results) => {
         // results is an array of all the vlan interfaces
+        console.log(results); 
     }).catch((err) => {
         // error getting interfaces
     });
@@ -62,6 +64,7 @@ api.connect().then((client) => {
     // Connection error
 });
 ```
+
 ### Adding and editing a firewall rule
 ```javascript
 api.connect().then((client) => {
@@ -75,7 +78,7 @@ api.connect().then((client) => {
         dstPort: 80
     }).then((response) => {
         // response should be an object like { ret: "*3C" }
-        return filterMenu.where("id", response.ret).update({
+        return filterMenu.where("id", response.id).update({
             srcAddress: "192.168.88.5"
         });
 
@@ -128,7 +131,7 @@ api.connect().then((client) => {
 ```javascript
 api.connect().then((client) => {
 
-    client.menu("/interface").where({ interface: "ether1"}).getOnly().then((result) => {
+    client.menu("/interface").where({name: "ether1"}).getOnly().then((result) => {
 
         const ether1 = client.model(result);
 
@@ -144,10 +147,7 @@ api.connect().then((client) => {
             // error updating
         });
 
-    }).catch((err) => {
-        // error getting proxy access list
     });
-
 }).catch((err) => {
     // Connection error
 });
@@ -186,9 +186,10 @@ api.connect().then((client) => {
     // Connection error
 });
 ```
-# Cloning this repo
+## Cloning this repo
 Note that, if are cloning this repo, you must be familiar with [Typescript](https://www.typescriptlang.org/) so you can make your changes.
-## Running the tests
+
+### Running the tests
 There aren't that many tests, but in order to run them, I used [RouterOS CHR](https://mikrotik.com/download) (look for the Cloud Hosted Router if you aren't familiar with it yet) on a virtual machine with 4 interfaces, where the first interface is a bridge of my network card:
 
 ![VirtualBox RouterOS CHR Conf](https://raw.githubusercontent.com/aluisiora/routeros-client/master/images/routeros-chr-interfaces.gif)
@@ -201,9 +202,11 @@ Run the tests using:
 npm test
 ```
 The testing was created using [mocha](https://mochajs.org/) and [chai](http://chaijs.com/).
-# TODO
+
+## TODO
  * Write more tests
-# License
+
+## License
 MIT License
 
 Copyright (c) 2017 Aluisio Rodrigues Amaral
